@@ -28,11 +28,11 @@ public class Employee {
     @Column(name = "position")
     private String position;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "department_id")
     private Department department;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subdivision_id")
     private Subdivision subdivision;
 
@@ -52,11 +52,11 @@ public class Employee {
     @Column(name = "work_status")
     private WorkStatus workStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "supervisor_id")
     private Employee supervisor;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "legal_entity_id")
     private LegalEntity legalEntity;
 
