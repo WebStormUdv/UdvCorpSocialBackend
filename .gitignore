@@ -34,3 +34,4 @@ build/
 
 .env
 examples.txt
+gen.md

@@ -1,13 +1,17 @@
 package ru.backend.UdvCorpSocialBackend.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.backend.UdvCorpSocialBackend.auth.JwtUtil;
 import ru.backend.UdvCorpSocialBackend.dto.CreateEmployeeRequest;
+import ru.backend.UdvCorpSocialBackend.dto.EmployeeProfileDto;
 import ru.backend.UdvCorpSocialBackend.dto.EmployeeResponseDto;
-import ru.backend.UdvCorpSocialBackend.dto.EmployeeProfileResponseDto;
+import ru.backend.UdvCorpSocialBackend.mapper.EmployeeMapper;
 import ru.backend.UdvCorpSocialBackend.model.Employee;
 import ru.backend.UdvCorpSocialBackend.model.EmployeeProfile;
 import ru.backend.UdvCorpSocialBackend.model.enums.RoleType;
@@ -24,16 +28,20 @@ public class EmployeeService {
 
     private static final Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeRepository employeeRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final Validator validator;
+    private final EmployeeMapper employeeMapper;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    public EmployeeService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, Validator validator, EmployeeMapper employeeMapper) {
+        this.employeeRepository = employeeRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.validator = validator;
+        this.employeeMapper = employeeMapper;
+    }
 
-    @Autowired
-    private Validator validator;
-
-    public Employee createEmployee(CreateEmployeeRequest request) {
+    @Transactional
+    public EmployeeResponseDto createEmployee(CreateEmployeeRequest request) {
         logger.info("Creating employee with email: {}", request.getEmail());
 
         // Валидация входных данных
@@ -70,53 +78,75 @@ public class EmployeeService {
 
         Employee savedEmployee = employeeRepository.save(employee);
         logger.debug("Employee created with ID: {}", savedEmployee.getId());
-        return savedEmployee;
+        return employeeMapper.toResponseDto(savedEmployee);
     }
 
-    public EmployeeResponseDto toEmployeeResponseDto(Employee employee) {
-        EmployeeResponseDto dto = new EmployeeResponseDto();
-        dto.setId(employee.getId());
-        dto.setFullName(employee.getFullName());
-        dto.setPhotoUrl(employee.getPhotoUrl());
-        dto.setPosition(employee.getPosition());
-        dto.setEmail(employee.getEmail());
-        dto.setOnlineStatus(employee.getOnlineStatus());
-        dto.setWorkStatus(employee.getWorkStatus());
-        dto.setWorkplace(employee.getWorkplace());
-        dto.setTelegram(employee.getTelegram());
-        dto.setMattermost(employee.getMattermost());
-        dto.setRole(employee.getRole());
-        dto.setProfileLevel(employee.getProfileLevel());
+    @Transactional(readOnly = true)
+    public EmployeeProfileDto getCurrentEmployeeProfile() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with email: " + email));
+        return employeeMapper.toProfileDto(employee);
+    }
 
-        // Устанавливаем ID для связанных сущностей
-        if (employee.getDepartment() != null) {
-            dto.setDepartmentId(employee.getDepartment().getId());
-        }
-        if (employee.getSubdivision() != null) {
-            dto.setSubdivisionId(employee.getSubdivision().getId());
-        }
-        if (employee.getLegalEntity() != null) {
-            dto.setLegalEntityId(employee.getLegalEntity().getId());
-        }
-        if (employee.getSupervisor() != null) {
-            dto.setSupervisorId(employee.getSupervisor().getId());
-        }
+    @Transactional
+    public EmployeeProfileDto updateCurrentEmployeeProfile(EmployeeProfileDto updateDto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with email: " + email));
 
-        // Преобразование EmployeeProfile
         EmployeeProfile profile = employee.getProfile();
-        if (profile != null) {
-            EmployeeProfileResponseDto profileDto = new EmployeeProfileResponseDto();
-            profileDto.setEmployeeId(profile.getEmployeeId());
-            profileDto.setStatusState(profile.getStatusState());
-            profileDto.setStatusComment(profile.getStatusComment());
-            profileDto.setAboutMe(profile.getAboutMe());
-            profileDto.setBirthday(profile.getBirthday());
-            profileDto.setCity(profile.getCity());
-            profileDto.setHobbies(profile.getHobbies());
-            profileDto.setEmploymentStatus(profile.getEmploymentStatus());
-            dto.setProfile(profileDto);
+        if (profile == null) {
+            profile = new EmployeeProfile();
+            profile.setEmployee(employee);
+            profile.setEmployeeId(employee.getId());
+            employee.setProfile(profile);
         }
 
-        return dto;
+        // Update editable fields
+        profile.setAboutMe(updateDto.getAboutMe());
+        profile.setCity(updateDto.getCity());
+        profile.setHobbies(updateDto.getHobbies());
+        profile.setBirthday(updateDto.getBirthday());
+        profile.setStatusState(updateDto.getStatusState());
+        profile.setStatusComment(updateDto.getStatusComment());
+        profile.setEmploymentStatus(updateDto.getEmploymentStatus());
+
+        employeeRepository.save(employee);
+        return employeeMapper.toProfileDto(employee);
     }
+
+    @Transactional
+    public EmployeeProfileDto updateEmployeeProfile(Integer employeeId, EmployeeProfileDto updateDto) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with id: " + employeeId));
+
+        EmployeeProfile profile = employee.getProfile();
+        if (profile == null) {
+            profile = new EmployeeProfile();
+            profile.setEmployee(employee);
+            profile.setEmployeeId(employee.getId());
+            employee.setProfile(profile);
+        }
+
+        // Update editable fields
+        profile.setAboutMe(updateDto.getAboutMe());
+        profile.setCity(updateDto.getCity());
+        profile.setHobbies(updateDto.getHobbies());
+        profile.setBirthday(updateDto.getBirthday());
+        profile.setStatusState(updateDto.getStatusState());
+        profile.setStatusComment(updateDto.getStatusComment());
+        profile.setEmploymentStatus(updateDto.getEmploymentStatus());
+
+        employeeRepository.save(employee);
+        return employeeMapper.toProfileDto(employee);
+    }
+
+    @Transactional(readOnly = true)
+    public EmployeeProfileDto getEmployeeProfileById(Integer id) {
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with id: " + id));
+        return employeeMapper.toProfileDto(employee);
+    }
+
 }
