@@ -6,4 +6,7 @@ import ru.backend.UdvCorpSocialBackend.model.Like;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Integer> {
+    boolean existsByPostIdAndEmployeeId(Integer postId, Integer employeeId);
+    void deleteByPostIdAndEmployeeId(Integer postId, Integer employeeId);
+    long countByPostId(Integer postId);
 }

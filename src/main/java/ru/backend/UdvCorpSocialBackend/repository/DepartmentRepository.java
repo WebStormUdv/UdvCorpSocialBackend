@@ -6,4 +6,5 @@ import ru.backend.UdvCorpSocialBackend.model.Department;
 
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Integer> {
+    boolean existsById(Integer id);
 }

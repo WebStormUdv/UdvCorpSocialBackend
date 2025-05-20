@@ -6,4 +6,5 @@ import ru.backend.UdvCorpSocialBackend.model.Subdivision;
 
 @Repository
 public interface SubdivisionRepository extends JpaRepository<Subdivision, Integer> {
+    boolean existsByDepartmentId(Integer departmentId);
 }

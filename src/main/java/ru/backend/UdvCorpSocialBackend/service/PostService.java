@@ -17,6 +17,7 @@ import ru.backend.UdvCorpSocialBackend.model.Employee;
 import ru.backend.UdvCorpSocialBackend.model.Post;
 import ru.backend.UdvCorpSocialBackend.model.enums.PostType;
 import ru.backend.UdvCorpSocialBackend.repository.EmployeeRepository;
+import ru.backend.UdvCorpSocialBackend.repository.LikeRepository;
 import ru.backend.UdvCorpSocialBackend.repository.PostRepository;
 
 import java.time.LocalDate;
@@ -31,11 +32,13 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final EmployeeRepository employeeRepository;
+    private final LikeRepository likeRepository;
 
     @Autowired
-    public PostService(PostRepository postRepository, EmployeeRepository employeeRepository) {
+    public PostService(PostRepository postRepository, EmployeeRepository employeeRepository, LikeRepository likeRepository) {
         this.postRepository = postRepository;
         this.employeeRepository = employeeRepository;
+        this.likeRepository = likeRepository;
     }
 
     @Transactional
@@ -188,6 +191,18 @@ public class PostService {
         dto.setMediaType(post.getMediaType());
         dto.setType(post.getType());
         dto.setTimestamp(post.getTimestamp());
+
+        Integer currentEmployeeId = getCurrentEmployeeId();
+        dto.setIsLiked(likeRepository.existsByPostIdAndEmployeeId(post.getId(), currentEmployeeId));
+        dto.setLikesCount(likeRepository.countByPostId(post.getId()));
+
         return dto;
+    }
+
+    private Integer getCurrentEmployeeId() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return employeeRepository.findByEmail(email)
+                .map(Employee::getId)
+                .orElseThrow(() -> new EntityNotFoundException("Текущий пользователь с email " + email + " не найден"));
     }
 }

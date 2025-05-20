@@ -17,4 +17,10 @@ public class PostDto {
     private String mediaType;
     private PostType type;
     private LocalDateTime timestamp;
+    private boolean isLiked;
+    private long likesCount;
+
+    public void setIsLiked(boolean b) {
+        this.isLiked = b;
+    }
 }
