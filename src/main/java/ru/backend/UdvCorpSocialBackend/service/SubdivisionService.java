@@ -2,6 +2,7 @@ package ru.backend.UdvCorpSocialBackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.backend.UdvCorpSocialBackend.dto.SubdivisionCreateDTO;
 import ru.backend.UdvCorpSocialBackend.dto.SubdivisionResponseDTO;
 import ru.backend.UdvCorpSocialBackend.model.Department;
@@ -42,6 +43,7 @@ public class SubdivisionService {
         return convertToDTO(subdivision);
     }
 
+    @Transactional
     public SubdivisionResponseDTO createSubdivision(SubdivisionCreateDTO subdivisionDTO) {
         validateSubdivisionDTO(subdivisionDTO);
         Subdivision subdivision = new Subdivision();
@@ -60,6 +62,7 @@ public class SubdivisionService {
         return convertToDTO(savedSubdivision);
     }
 
+    @Transactional
     public SubdivisionResponseDTO updateSubdivision(Integer id, SubdivisionCreateDTO subdivisionDTO) {
         Subdivision subdivision = subdivisionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Subdivision not found with id: " + id));
@@ -83,6 +86,7 @@ public class SubdivisionService {
         return convertToDTO(updatedSubdivision);
     }
 
+    @Transactional
     public void deleteSubdivision(Integer id) {
         Subdivision subdivision = subdivisionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Subdivision not found with id: " + id));

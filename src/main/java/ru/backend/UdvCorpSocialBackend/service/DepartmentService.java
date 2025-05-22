@@ -2,6 +2,7 @@ package ru.backend.UdvCorpSocialBackend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.backend.UdvCorpSocialBackend.dto.DepartmentCreateDTO;
 import ru.backend.UdvCorpSocialBackend.dto.DepartmentResponseDTO;
 import ru.backend.UdvCorpSocialBackend.model.Department;
@@ -38,6 +39,7 @@ public class DepartmentService {
         return convertToDTO(department);
     }
 
+    @Transactional
     public DepartmentResponseDTO createDepartment(DepartmentCreateDTO departmentDTO) {
         validateDepartmentDTO(departmentDTO);
         Department department = new Department();
@@ -51,6 +53,7 @@ public class DepartmentService {
         return convertToDTO(savedDepartment);
     }
 
+    @Transactional
     public DepartmentResponseDTO updateDepartment(Integer id, DepartmentCreateDTO departmentDTO) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));
@@ -67,6 +70,7 @@ public class DepartmentService {
         return convertToDTO(updatedDepartment);
     }
 
+    @Transactional
     public void deleteDepartment(Integer id) {
         Department department = departmentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + id));

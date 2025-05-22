@@ -3,6 +3,7 @@ package ru.backend.UdvCorpSocialBackend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.backend.UdvCorpSocialBackend.dto.OrganizationNodeDTO;
 import ru.backend.UdvCorpSocialBackend.model.Department;
 import ru.backend.UdvCorpSocialBackend.model.Employee;
@@ -32,6 +33,7 @@ public class OrganizationService {
     @Value("${organization.root.name}")
     private String rootName;
 
+    @Transactional
     public OrganizationNodeDTO getOrganizationStructure() {
         OrganizationNodeDTO root = new OrganizationNodeDTO();
         root.setId(rootId);
