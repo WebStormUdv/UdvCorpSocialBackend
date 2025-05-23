@@ -20,6 +20,7 @@ import ru.backend.UdvCorpSocialBackend.repository.EmployeeRepository;
 import ru.backend.UdvCorpSocialBackend.repository.LikeRepository;
 import ru.backend.UdvCorpSocialBackend.repository.PostRepository;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -33,12 +34,14 @@ public class PostService {
     private final PostRepository postRepository;
     private final EmployeeRepository employeeRepository;
     private final LikeRepository likeRepository;
+    private final FileStorageService fileStorageService;
 
     @Autowired
-    public PostService(PostRepository postRepository, EmployeeRepository employeeRepository, LikeRepository likeRepository) {
+    public PostService(PostRepository postRepository, EmployeeRepository employeeRepository, LikeRepository likeRepository, FileStorageService fileStorageService) {
         this.postRepository = postRepository;
         this.employeeRepository = employeeRepository;
         this.likeRepository = likeRepository;
+        this.fileStorageService = fileStorageService;
     }
 
     @Transactional
@@ -57,25 +60,91 @@ public class PostService {
             throw new IllegalStateException("Daily post limit of " + MAX_POSTS_PER_DAY + " reached");
         }
 
-        // Validate media size (mock check, assumes media is accessible)
-        if (postCreateDto.getMediaUrl() != null && !postCreateDto.getMediaUrl().isEmpty()) {
-            // In a real scenario, check the actual file size via HTTP HEAD request or storage service
-            // Here we assume the size is valid for simplicity
-            // TODO
-        }
-
         Post post = new Post();
         post.setEmployee(employee);
         post.setCommunity(null); // Global post, no community
         post.setContent(postCreateDto.getContent());
-        post.setMediaUrl(postCreateDto.getMediaUrl());
-        post.setMediaType(postCreateDto.getMediaType());
         post.setType(postCreateDto.getType());
+
+        // Обработка загруженного файла
+        if (postCreateDto.getMediaFile() != null && !postCreateDto.getMediaFile().isEmpty()) {
+            try {
+                String mediaUrl = fileStorageService.storeFile(postCreateDto.getMediaFile());
+                post.setMediaUrl(mediaUrl);
+                post.setMediaType(postCreateDto.getMediaFile().getContentType());
+            } catch (IOException e) {
+                logger.error("Failed to store media file for post by employee: {}", email, e);
+                throw new RuntimeException("Failed to store media file", e);
+            }
+        }
 
         Post savedPost = postRepository.save(post);
         logger.info("Post created with ID: {} by employee: {}", savedPost.getId(), email);
 
         return mapToDto(savedPost);
+    }
+
+    @Transactional
+    public PostDto updatePost(Integer id, PostCreateDto postCreateDto) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Сотрудник не найден с email: " + email));
+
+        Post post = postRepository.findByIdAndCommunityIsNull(id)
+                .orElseThrow(() -> new EntityNotFoundException("Пост с ID " + id + " не найден или не является глобальным"));
+
+        if (!post.getEmployee().getId().equals(employee.getId())) {
+            throw new SecurityException("Только автор может обновлять пост");
+        }
+
+        post.setContent(postCreateDto.getContent());
+        post.setType(postCreateDto.getType());
+
+        // Обработка нового файла
+        if (postCreateDto.getMediaFile() != null && !postCreateDto.getMediaFile().isEmpty()) {
+            try {
+                String mediaUrl = fileStorageService.storeFile(postCreateDto.getMediaFile());
+                post.setMediaUrl(mediaUrl);
+                post.setMediaType(postCreateDto.getMediaFile().getContentType());
+            } catch (IOException e) {
+                logger.error("Failed to store media file for post update ID: {}", id, e);
+                throw new RuntimeException("Failed to store media file", e);
+            }
+        } else if (postCreateDto.getMediaFile() == null) {
+            // Если файл не загружен, сохраняем текущие значения или очищаем
+            post.setMediaUrl(null);
+            post.setMediaType(null);
+        }
+
+        Post updatedPost = postRepository.save(post);
+        logger.info("Пост с ID: {} обновлен сотрудником: {}", id, email);
+        return mapToDto(updatedPost);
+    }
+
+    @Transactional
+    public void deletePost(Integer id) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Сотрудник не найден с email: " + email));
+
+        Post post = postRepository.findByIdAndCommunityIsNull(id)
+                .orElseThrow(() -> new EntityNotFoundException("Пост с ID " + id + " не найден или не является глобальным"));
+
+        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .stream().anyMatch(a -> a.getAuthority().equals("ROLE_admin"));
+        boolean isAuthor = post.getEmployee().getId().equals(employee.getId());
+
+        if (!isAuthor && !isAdmin) {
+            throw new SecurityException("Только автор или админ могут удалять пост");
+        }
+
+        // Удаление файла из MinIO
+        if (post.getMediaUrl() != null) {
+            fileStorageService.deleteFile(post.getMediaUrl());
+        }
+
+        postRepository.delete(post);
+        logger.info("Пост с ID: {} удален сотрудником: {}", id, email);
     }
 
     @Transactional(readOnly = true)
@@ -102,58 +171,8 @@ public class PostService {
         return mapToDto(post);
     }
 
-    @Transactional
-    public PostDto updatePost(Integer id, PostCreateDto postCreateDto) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Employee employee = employeeRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Сотрудник не найден с email: " + email));
-
-        Post post = postRepository.findByIdAndCommunityIsNull(id)
-                .orElseThrow(() -> new EntityNotFoundException("Пост с ID " + id + " не найден или не является глобальным"));
-
-        if (!post.getEmployee().getId().equals(employee.getId())) {
-            throw new SecurityException("Только автор может обновлять пост");
-        }
-
-        // Валидация размера медиа (заглушка)
-        if (postCreateDto.getMediaUrl() != null && !postCreateDto.getMediaUrl().isEmpty()) {
-            // TODO: Реализовать проверку размера файла
-        }
-
-        post.setContent(postCreateDto.getContent());
-        post.setMediaUrl(postCreateDto.getMediaUrl());
-        post.setMediaType(postCreateDto.getMediaType());
-        post.setType(postCreateDto.getType());
-
-        Post updatedPost = postRepository.save(post);
-        logger.info("Пост с ID: {} обновлен сотрудником: {}", id, email);
-        return mapToDto(updatedPost);
-    }
-
-    @Transactional
-    public void deletePost(Integer id) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        Employee employee = employeeRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("Сотрудник не найден с email: " + email));
-
-        Post post = postRepository.findByIdAndCommunityIsNull(id)
-                .orElseThrow(() -> new EntityNotFoundException("Пост с ID " + id + " не найден или не является глобальным"));
-
-        boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-                .stream().anyMatch(a -> a.getAuthority().equals("ROLE_admin"));
-        boolean isAuthor = post.getEmployee().getId().equals(employee.getId());
-
-        if (!isAuthor && !isAdmin) {
-            throw new SecurityException("Только автор или админ могут удалять пост");
-        }
-
-        postRepository.delete(post);
-        logger.info("Пост с ID: {} удален сотрудником: {}", id, email);
-    }
-
     @Transactional(readOnly = true)
     public Page<PostDto> getPostsByEmployeeId(Integer employeeId, PostType type, String sortBy, String sortDirection, int page, int size) {
-        // Если employeeId не указан, использовать ID текущего пользователя
         Integer targetEmployeeId = employeeId;
         if (employeeId == null) {
             String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -161,7 +180,6 @@ public class PostService {
                     .orElseThrow(() -> new EntityNotFoundException("Сотрудник не найден с email: " + email));
             targetEmployeeId = currentEmployee.getId();
         } else {
-            // Проверка существования сотрудника
             employeeRepository.findById(employeeId)
                     .orElseThrow(() -> new EntityNotFoundException("Сотрудник с ID " + employeeId + " не найден"));
         }

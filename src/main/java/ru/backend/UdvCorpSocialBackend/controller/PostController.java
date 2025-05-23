@@ -1,22 +1,21 @@
 package ru.backend.UdvCorpSocialBackend.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.backend.UdvCorpSocialBackend.dto.PostCreateDto;
 import ru.backend.UdvCorpSocialBackend.dto.PostDto;
 import ru.backend.UdvCorpSocialBackend.model.enums.PostType;
 import ru.backend.UdvCorpSocialBackend.service.PostService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.ExampleObject;
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -31,36 +30,20 @@ public class PostController {
         this.pagedResourcesAssembler = pagedResourcesAssembler;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Создать новый пост",
-            description = "Создает новый глобальный пост для аутентифицированного пользователя. Сообщество не указывается."
+            description = "Создает новый глобальный пост для аутентифицированного пользователя. Поддерживает загрузку изображения (JPEG, PNG, до 10 MB)."
     )
     public ResponseEntity<PostDto> createPost(
-            @Valid @RequestBody
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Запрос на создание поста",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = PostCreateDto.class),
-                            examples = @ExampleObject(
-                                    name = "PostExample",
-                                    value = """
-                        {
-                            "content": "Привет, команда! Делюсь новостями нашего проекта...",
-                            "mediaUrl": "http://example.com/image.jpg",
-                            "mediaType": "image/jpeg",
-                            "type": "news"
-                        }
-                    """
-                            )
-                    )
-            )
-            PostCreateDto postCreateDto
+            @Valid @ModelAttribute PostCreateDto postCreateDto
     ) {
         PostDto postDto = postService.createPost(postCreateDto);
-        return ResponseEntity.ok(postDto);
+        return ResponseEntity.created(
+                ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                        .buildAndExpand(postDto.getId()).toUri()
+        ).body(postDto);
     }
 
     @GetMapping
@@ -91,34 +74,15 @@ public class PostController {
         return ResponseEntity.ok(postDto);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PreAuthorize("isAuthenticated()")
     @Operation(
             summary = "Обновить пост",
-            description = "Обновляет глобальный пост по его ID. Доступно только автору поста."
+            description = "Обновляет глобальный пост по его ID. Доступно только автору поста. Поддерживает загрузку нового изображения (JPEG, PNG, до 10 MB)."
     )
     public ResponseEntity<PostDto> updatePost(
             @PathVariable Integer id,
-            @Valid @RequestBody
-            @io.swagger.v3.oas.annotations.parameters.RequestBody(
-                    description = "Запрос на обновление поста",
-                    content = @Content(
-                            mediaType = "application/json",
-                            schema = @Schema(implementation = PostCreateDto.class),
-                            examples = @ExampleObject(
-                                    name = "PostUpdateExample",
-                                    value = """
-                        {
-                            "content": "Обновленный текст поста...",
-                            "mediaUrl": "http://example.com/new_image.jpg",
-                            "mediaType": "image/jpeg",
-                            "type": "news"
-                        }
-                    """
-                            )
-                    )
-            )
-            PostCreateDto postCreateDto
+            @Valid @ModelAttribute PostCreateDto postCreateDto
     ) {
         PostDto postDto = postService.updatePost(id, postCreateDto);
         return ResponseEntity.ok(postDto);
