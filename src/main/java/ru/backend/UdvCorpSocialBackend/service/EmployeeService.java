@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.backend.UdvCorpSocialBackend.auth.JwtUtil;
+import org.springframework.web.multipart.MultipartFile;
 import ru.backend.UdvCorpSocialBackend.dto.CreateEmployeeRequest;
 import ru.backend.UdvCorpSocialBackend.dto.EmployeeProfileDto;
 import ru.backend.UdvCorpSocialBackend.dto.EmployeeResponseDto;
@@ -21,6 +21,7 @@ import ru.backend.UdvCorpSocialBackend.repository.EmployeeRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
+import java.io.IOException;
 import java.util.Set;
 
 @Service
@@ -32,12 +33,15 @@ public class EmployeeService {
     private final PasswordEncoder passwordEncoder;
     private final Validator validator;
     private final EmployeeMapper employeeMapper;
+    private final FileStorageService fileStorageService;
 
-    public EmployeeService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, Validator validator, EmployeeMapper employeeMapper) {
+    public EmployeeService(EmployeeRepository employeeRepository, PasswordEncoder passwordEncoder,
+                           Validator validator, EmployeeMapper employeeMapper, FileStorageService fileStorageService) {
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
         this.validator = validator;
         this.employeeMapper = employeeMapper;
+        this.fileStorageService = fileStorageService;
     }
 
     @Transactional
@@ -117,6 +121,35 @@ public class EmployeeService {
     }
 
     @Transactional
+    public EmployeeProfileDto uploadProfileIcon(MultipartFile icon) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        logger.debug("Uploading profile icon for employee with email: {}", email);
+
+        Employee employee = employeeRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Employee not found with email: " + email));
+
+        try {
+            // Delete old icon if exists
+            if (employee.getPhotoUrl() != null) {
+                fileStorageService.deleteIconFile(employee.getPhotoUrl());
+                logger.debug("Deleted old icon for employee with email: {}", email);
+            }
+
+            // Upload new icon
+            String photoUrl = fileStorageService.storeIconFile(icon);
+            employee.setPhotoUrl(photoUrl);
+            logger.debug("Icon uploaded for employee with email: {}, URL: {}", email, photoUrl);
+
+            employeeRepository.save(employee);
+            logger.info("Profile icon updated for employee with email: {}", email);
+            return employeeMapper.toProfileDto(employee);
+        } catch (IOException e) {
+            logger.error("Failed to upload icon for employee with email: {}", email, e);
+            throw new IllegalStateException("Failed to upload icon: " + e.getMessage());
+        }
+    }
+
+    @Transactional
     public EmployeeProfileDto updateEmployeeProfile(Integer employeeId, EmployeeProfileDto updateDto) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with id: " + employeeId));
@@ -148,5 +181,4 @@ public class EmployeeService {
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found with id: " + id));
         return employeeMapper.toProfileDto(employee);
     }
-
 }

@@ -39,7 +39,9 @@ services:
       done;
       /usr/bin/mc mb local/posts --ignore-existing;
       /usr/bin/mc anonymous set download local/posts;
-      echo 'Bucket posts created and set to public read access';
+      /usr/bin/mc mb local/icons --ignore-existing;
+      /usr/bin/mc anonymous set download local/icons;
+      echo 'Buckets posts and icons created and set to public read access';
       exit 0;
       "
     networks:

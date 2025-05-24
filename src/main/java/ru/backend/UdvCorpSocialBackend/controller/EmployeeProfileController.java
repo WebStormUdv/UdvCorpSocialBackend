@@ -2,9 +2,11 @@ package ru.backend.UdvCorpSocialBackend.controller;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.backend.UdvCorpSocialBackend.dto.EmployeeProfileDto;
 import ru.backend.UdvCorpSocialBackend.service.EmployeeService;
 
@@ -46,6 +48,14 @@ public class EmployeeProfileController {
     public ResponseEntity<EmployeeProfileDto> updateEmployeeProfile(
             @PathVariable Integer id, @Valid @RequestBody EmployeeProfileDto updateDto) {
         EmployeeProfileDto updatedProfile = employeeService.updateEmployeeProfile(id, updateDto);
+        return ResponseEntity.ok(updatedProfile);
+    }
+
+    @PostMapping(value = "/me/icon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<EmployeeProfileDto> uploadProfileIcon(
+            @RequestPart("icon") MultipartFile icon) {
+        EmployeeProfileDto updatedProfile = employeeService.uploadProfileIcon(icon);
         return ResponseEntity.ok(updatedProfile);
     }
 }
