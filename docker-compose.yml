@@ -1,6 +1,72 @@
 version: '3.9'
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: udv-app
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/udv_corp_social
+      - SPRING_DATASOURCE_USERNAME=${UDV_DB_USER}
+      - SPRING_DATASOURCE_PASSWORD=${UDV_DB_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_SHOW_SQL=true
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION}
+      - MINIO_URL=http://minio:9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin123
+      - MINIO_BUCKET_POSTS=posts
+      - MINIO_BUCKET_ICONS=icons
+      - SPRING_SERVLET_MULTIPART_MAX_FILE_SIZE=10MB
+      - SPRING_SERVLET_MULTIPART_MAX_REQUEST_SIZE=10MB
+      - ORGANIZATION_ROOT_ID=company
+      - ORGANIZATION_ROOT_NAME=UDV corp
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  postgres:
+    image: postgres:17
+    container_name: udv-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=udv_corp_social
+      - POSTGRES_USER=${UDV_DB_USER}
+      - POSTGRES_PASSWORD=${UDV_DB_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${UDV_DB_USER} -d udv_corp_social"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
   minio:
     image: quay.io/minio/minio:RELEASE.2025-04-22T22-12-26Z
     container_name: minio
@@ -8,8 +74,8 @@ services:
       - "9000:9000"
       - "9001:9001"
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin123
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin123
     volumes:
       - minio_data:/data
     command: server /data --console-address ":9001"
@@ -30,25 +96,62 @@ services:
     image: minio/mc:latest
     container_name: init-minio
     depends_on:
-      - minio
+      minio:
+        condition: service_healthy
     entrypoint: >
       /bin/sh -c "
       until (/usr/bin/mc alias set local http://minio:9000 minioadmin minioadmin123); do
-        echo 'Waiting for MinIO to be ready...';
+        echo 'Ожидание готовности MinIO...';
         sleep 2;
       done;
       /usr/bin/mc mb local/posts --ignore-existing;
       /usr/bin/mc anonymous set download local/posts;
       /usr/bin/mc mb local/icons --ignore-existing;
       /usr/bin/mc anonymous set download local/icons;
-      echo 'Buckets posts and icons created and set to public read access';
+      echo 'Корзины posts и icons созданы и настроены на публичный доступ';
       exit 0;
       "
     networks:
       - app-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  pgadmin:
+    image: dpage/pgadmin4:8.12
+    container_name: udv-pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@udvcorp.com
+      - PGADMIN_DEFAULT_PASSWORD=admin123
+      - PGADMIN_CONFIG_ENHANCED_COOKIE_PROTECTION=True
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:80/login"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
+  postgres_data:
+    driver: local
   minio_data:
+    driver: local
+  pgadmin_data:
     driver: local
 
 networks:
