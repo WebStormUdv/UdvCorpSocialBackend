@@ -3,6 +3,7 @@ package ru.backend.UdvCorpSocialBackend.model;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -11,12 +12,18 @@ import java.util.Objects;
 @Embeddable
 @Getter
 @Setter
+@NoArgsConstructor
 public class CommunityMemberId implements Serializable {
     @Column(name = "community_id")
     private Integer communityId;
 
     @Column(name = "employee_id")
     private Integer employeeId;
+
+    public CommunityMemberId(Integer communityId, Integer employeeId) {
+        this.communityId = communityId;
+        this.employeeId = employeeId;
+    }
 
     // equals and hashCode
     @Override

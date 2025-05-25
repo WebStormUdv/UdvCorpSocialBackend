@@ -12,6 +12,7 @@ public class PostDto {
     private Integer id;
     private Integer employeeId;
     private String employeeFullName;
+    private Integer communityId;
     private String content;
     private String mediaUrl;
     private String mediaType;

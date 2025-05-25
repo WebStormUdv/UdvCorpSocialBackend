@@ -6,4 +6,5 @@ import ru.backend.UdvCorpSocialBackend.model.Community;
 
 @Repository
 public interface CommunityRepository extends JpaRepository<Community, Integer> {
+    long countByCreatorId(Integer creatorId);
 }

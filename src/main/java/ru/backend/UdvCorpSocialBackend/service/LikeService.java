@@ -5,12 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.backend.UdvCorpSocialBackend.model.Employee;
-import ru.backend.UdvCorpSocialBackend.model.Like;
-import ru.backend.UdvCorpSocialBackend.model.Post;
-import ru.backend.UdvCorpSocialBackend.repository.EmployeeRepository;
-import ru.backend.UdvCorpSocialBackend.repository.LikeRepository;
-import ru.backend.UdvCorpSocialBackend.repository.PostRepository;
+import ru.backend.UdvCorpSocialBackend.model.*;
+import ru.backend.UdvCorpSocialBackend.repository.*;
 
 @Service
 @RequiredArgsConstructor
@@ -19,13 +15,26 @@ public class LikeService {
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
     private final EmployeeRepository employeeRepository;
+    private final CommunityMemberRepository communityMemberRepository;
+
+    private Integer getCurrentEmployeeId() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        return employeeRepository.findByEmail(email)
+                .map(Employee::getId)
+                .orElseThrow(() -> new EntityNotFoundException("Текущий пользователь с email " + email + " не найден"));
+    }
 
     @Transactional
     public void addLike(Integer postId) {
+        Integer employeeId = getCurrentEmployeeId();
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Пост с ID " + postId + " не найден"));
 
-        Integer employeeId = getCurrentEmployeeId();
+        if (post.getCommunity() != null && !communityMemberRepository.existsByCommunityIdAndEmployeeId(
+                post.getCommunity().getId(), employeeId)) {
+            throw new SecurityException("Вы не являетесь участником сообщества этого поста");
+        }
+
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Сотрудник с ID " + employeeId + " не найден"));
 
@@ -42,9 +51,12 @@ public class LikeService {
     @Transactional
     public void removeLike(Integer postId) {
         Integer employeeId = getCurrentEmployeeId();
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Пост с ID " + postId + " не найден"));
 
-        if (!postRepository.existsById(postId)) {
-            throw new EntityNotFoundException("Пост с ID " + postId + " не найден");
+        if (post.getCommunity() != null && !communityMemberRepository.existsByCommunityIdAndEmployeeId(
+                post.getCommunity().getId(), employeeId)) {
+            throw new SecurityException("Вы не являетесь участником сообщества этого поста");
         }
 
         if (!likeRepository.existsByPostIdAndEmployeeId(postId, employeeId)) {
@@ -52,12 +64,5 @@ public class LikeService {
         }
 
         likeRepository.deleteByPostIdAndEmployeeId(postId, employeeId);
-    }
-
-    private Integer getCurrentEmployeeId() {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        return employeeRepository.findByEmail(email)
-                .map(Employee::getId)
-                .orElseThrow(() -> new EntityNotFoundException("Текущий пользователь с email " + email + " не найден"));
     }
 }

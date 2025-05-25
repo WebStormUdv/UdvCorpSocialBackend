@@ -23,4 +23,12 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<Post> findByEmployeeIdAndCommunityIsNull(Integer employeeId, Pageable pageable);
 
     Page<Post> findByEmployeeIdAndTypeAndCommunityIsNull(Integer employeeId, PostType type, Pageable pageable);
+
+    Page<Post> findByCommunityId(Integer communityId, Pageable pageable);
+
+    long countByEmployeeIdAndCommunityIdAndTimestampBetween(Integer employeeId, Integer communityId, LocalDateTime start, LocalDateTime end);
+
+    long countByEmployeeIdAndCommunityIsNullAndTimestampBetween(Integer employeeId, LocalDateTime start, LocalDateTime end);
+
+    Page<Post> findByCommunityIdAndType(Integer communityId, PostType type, Pageable pageable);
 }

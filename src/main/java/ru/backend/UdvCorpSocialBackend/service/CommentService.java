@@ -1,19 +1,19 @@
 package ru.backend.UdvCorpSocialBackend.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.backend.UdvCorpSocialBackend.model.Comment;
-import ru.backend.UdvCorpSocialBackend.model.Employee;
-import ru.backend.UdvCorpSocialBackend.model.Post;
+import ru.backend.UdvCorpSocialBackend.model.*;
+import ru.backend.UdvCorpSocialBackend.model.enums.CommunityRole;
 import ru.backend.UdvCorpSocialBackend.model.enums.RoleType;
-import ru.backend.UdvCorpSocialBackend.repository.CommentRepository;
-import ru.backend.UdvCorpSocialBackend.repository.EmployeeRepository;
-import ru.backend.UdvCorpSocialBackend.repository.PostRepository;
-import jakarta.persistence.EntityNotFoundException;
+import ru.backend.UdvCorpSocialBackend.repository.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +22,9 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
     private final EmployeeRepository employeeRepository;
+    private final CommunityMemberRepository communityMemberRepository;
+
+    private static final int MAX_COMMENTS_PER_DAY = 50;
 
     private Integer getCurrentEmployeeId() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -32,12 +35,24 @@ public class CommentService {
 
     @Transactional
     public Comment addComment(Integer postId, String content) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("Пост с ID " + postId + " не найден"));
-
         Integer employeeId = getCurrentEmployeeId();
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Сотрудник с ID " + employeeId + " не найден"));
+
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Пост с ID " + postId + " не найден"));
+
+        // Проверка членства в сообществе
+        if (post.getCommunity() != null && !communityMemberRepository.existsByCommunityIdAndEmployeeId(
+                post.getCommunity().getId(), employeeId)) {
+            throw new SecurityException("Вы не являетесь участником сообщества этого поста");
+        }
+
+        // Проверка лимита комментариев
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        if (commentRepository.countByEmployeeIdAndTimestampAfter(employeeId, startOfDay) >= MAX_COMMENTS_PER_DAY) {
+            throw new IllegalStateException("Достигнут дневной лимит комментариев: " + MAX_COMMENTS_PER_DAY);
+        }
 
         Comment comment = new Comment();
         comment.setPost(post);
@@ -48,9 +63,15 @@ public class CommentService {
 
     @Transactional(readOnly = true)
     public Page<Comment> getCommentsByPostId(Integer postId, Pageable pageable) {
-        if (!postRepository.existsById(postId)) {
-            throw new EntityNotFoundException("Пост с ID " + postId + " не найден");
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Пост с ID " + postId + " не найден"));
+
+        Integer employeeId = getCurrentEmployeeId();
+        if (post.getCommunity() != null && !communityMemberRepository.existsByCommunityIdAndEmployeeId(
+                post.getCommunity().getId(), employeeId)) {
+            throw new SecurityException("Вы не являетесь участником сообщества этого поста");
         }
+
         return commentRepository.findByPostId(postId, pageable);
     }
 
@@ -77,7 +98,11 @@ public class CommentService {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new EntityNotFoundException("Сотрудник с ID " + employeeId + " не найден"));
 
-        if (!comment.getEmployee().getId().equals(employeeId) && employee.getRole() != RoleType.admin) {
+        boolean isCommunityAdmin = comment.getPost().getCommunity() != null &&
+                communityMemberRepository.existsByCommunityIdAndEmployeeIdAndRole(
+                        comment.getPost().getCommunity().getId(), employeeId, CommunityRole.admin);
+
+        if (!comment.getEmployee().getId().equals(employeeId) && employee.getRole() != RoleType.admin && !isCommunityAdmin) {
             throw new IllegalStateException("Вы не можете удалить этот комментарий");
         }
 

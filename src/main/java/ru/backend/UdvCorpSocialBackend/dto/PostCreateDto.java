@@ -21,4 +21,6 @@ public class PostCreateDto {
 
     @NotNull(message = "Post type is required")
     private PostType type;
+
+    private Integer communityId; // Optional, for community-specific posts
 }
