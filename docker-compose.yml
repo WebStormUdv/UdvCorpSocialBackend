@@ -108,7 +108,9 @@ services:
       /usr/bin/mc anonymous set download local/posts;
       /usr/bin/mc mb local/icons --ignore-existing;
       /usr/bin/mc anonymous set download local/icons;
-      echo 'Корзины posts и icons созданы и настроены на публичный доступ';
+      /usr/bin/mc mb local/skill-docs --ignore-existing;
+      /usr/bin/mc anonymous set download local/skill-docs;
+      echo 'Корзины созданы и настроены на публичный доступ';
       exit 0;
       "
     networks:

@@ -38,4 +38,12 @@ public class SkillConfirmationRequest {
 
     @Column(name = "approval_date")
     private LocalDate approvalDate;
+
+    @Column(name = "created_date", nullable = false, updatable = false)
+    private LocalDate createdDate;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdDate = LocalDate.now();
+    }
 }
