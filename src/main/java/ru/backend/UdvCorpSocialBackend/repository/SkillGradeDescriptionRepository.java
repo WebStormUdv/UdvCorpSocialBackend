@@ -5,6 +5,10 @@ import org.springframework.stereotype.Repository;
 import ru.backend.UdvCorpSocialBackend.model.SkillGradeDescription;
 import ru.backend.UdvCorpSocialBackend.model.SkillGradeDescriptionId;
 
+import java.util.List;
+
 @Repository
 public interface SkillGradeDescriptionRepository extends JpaRepository<SkillGradeDescription, SkillGradeDescriptionId> {
+    List<SkillGradeDescription> findBySkillId(Integer skillId);
+    void deleteBySkillId(Integer skillId);
 }

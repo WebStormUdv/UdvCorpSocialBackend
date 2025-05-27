@@ -6,4 +6,5 @@ import ru.backend.UdvCorpSocialBackend.model.Skill;
 
 @Repository
 public interface SkillRepository extends JpaRepository<Skill, Integer> {
+    boolean existsByName(String name);
 }

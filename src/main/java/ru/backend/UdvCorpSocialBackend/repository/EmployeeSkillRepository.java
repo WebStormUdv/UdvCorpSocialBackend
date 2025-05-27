@@ -7,4 +7,5 @@ import ru.backend.UdvCorpSocialBackend.model.EmployeeSkillId;
 
 @Repository
 public interface EmployeeSkillRepository extends JpaRepository<EmployeeSkill, EmployeeSkillId> {
+    boolean existsBySkillId(Integer skillId);
 }
