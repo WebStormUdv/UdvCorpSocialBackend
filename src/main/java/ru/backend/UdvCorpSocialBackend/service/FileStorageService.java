@@ -27,6 +27,9 @@ public class FileStorageService {
     @Value("${minio.bucket.skill-docs}")
     private String skillDocsBucketName;
 
+    @Value("${minio.bucket.grat-achieves}")
+    private String gratAchievsBucketName;
+
     public FileStorageService(S3Client s3Client) {
         this.s3Client = s3Client;
     }
@@ -149,6 +152,46 @@ public class FileStorageService {
         }
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         s3Client.deleteObject(b -> b.bucket(skillDocsBucketName).key(fileName));
+    }
+
+    public String storeGratAchieveFile(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
+
+        // Проверка размера файла
+        if (file.getSize() > 10 * 1024 * 1024) { // 10 MB
+            throw new IllegalArgumentException("File size exceeds 10 MB");
+        }
+
+        // Проверка формата
+        String contentType = file.getContentType();
+        if (!isImage(contentType)) {
+            throw new IllegalArgumentException("Only image files (JPEG, PNG) are allowed");
+        }
+
+        // Генерация уникального имени файла
+        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
+
+        // Загрузка в MinIO
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(gratAchievsBucketName)
+                .key(fileName)
+                .contentType(contentType)
+                .build();
+
+        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
+
+        // Формирование публичного URL
+        return String.format("%s/%s/%s", minioUrl, gratAchievsBucketName, fileName);
+    }
+
+    public void deleteGratAchieveFile(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty()) {
+            return;
+        }
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+        s3Client.deleteObject(b -> b.bucket(gratAchievsBucketName).key(fileName));
     }
 
     private boolean isImage(String contentType) {

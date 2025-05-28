@@ -110,6 +110,8 @@ services:
       /usr/bin/mc anonymous set download local/icons;
       /usr/bin/mc mb local/skill-docs --ignore-existing;
       /usr/bin/mc anonymous set download local/skill-docs;
+      /usr/bin/mc mb local/grat-achieves --ignore-existing;
+      /usr/bin/mc anonymous set download local/grat-achieves;
       echo 'Корзины созданы и настроены на публичный доступ';
       exit 0;
       "
