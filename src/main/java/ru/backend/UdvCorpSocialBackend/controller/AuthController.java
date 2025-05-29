@@ -3,6 +3,7 @@ package ru.backend.UdvCorpSocialBackend.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import ru.backend.UdvCorpSocialBackend.dto.LoginRequest;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication", description = "API для аутентификации пользователей")
 public class AuthController {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -33,8 +35,10 @@ public class AuthController {
     private UserDetailsService userDetailsService;
 
     @PostMapping("/login")
-    @Operation(summary = "User login", description = "Authenticates a user and returns a JWT token")
-    @ApiResponses(value = {
+    @Operation(
+            summary = "Вход пользователя",
+            description = "Аутентифицирует пользователя и возвращает JWT-токен для последующих запросов."
+    )    @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully authenticated"),
             @ApiResponse(responseCode = "401", description = "Unauthorized - invalid credentials")
     })

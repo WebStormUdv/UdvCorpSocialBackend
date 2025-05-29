@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/legal-entities")
-@Tag(name = "Legal Entities", description = "API for managing legal entities")
+@Tag(name = "Legal Entities", description = "API для управления юридическими лицами")
 @SecurityRequirement(name = "bearerAuth")
 public class LegalEntityController {
 
@@ -28,8 +28,8 @@ public class LegalEntityController {
     private LegalEntityService legalEntityService;
 
     @Operation(
-            summary = "Get all legal entities",
-            description = "Retrieves a list of all legal entities, optionally filtered by name. Accessible to all authenticated users."
+            summary = "Получить все юридические лица",
+            description = "Возвращает список всех юридических лиц, с возможностью фильтрации по названию. Доступно для всех аутентифицированных пользователей."
     )
     @ApiResponses({
             @ApiResponse(
@@ -54,8 +54,8 @@ public class LegalEntityController {
     }
 
     @Operation(
-            summary = "Get legal entity by ID",
-            description = "Retrieves details of a specific legal entity, optionally including associated employees. Accessible to all authenticated users."
+            summary = "Получить юридическое лицо по ID",
+            description = "Возвращает подробную информацию о юридическом лице, с возможностью включения связанных сотрудников. Доступно для всех аутентифицированных пользователей."
     )
     @ApiResponses({
             @ApiResponse(
@@ -87,8 +87,8 @@ public class LegalEntityController {
     }
 
     @Operation(
-            summary = "Create a new legal entity",
-            description = "Creates a new legal entity. Accessible only to users with ADMIN role."
+            summary = "Создать новое юридическое лицо",
+            description = "Создает новое юридическое лицо. Доступно только пользователям с ролью ADMIN."
     )
     @ApiResponses({
             @ApiResponse(
@@ -124,8 +124,8 @@ public class LegalEntityController {
     }
 
     @Operation(
-            summary = "Update a legal entity",
-            description = "Updates an existing legal entity by ID. Accessible only to users with ADMIN role."
+            summary = "Обновить юридическое лицо",
+            description = "Обновляет существующее юридическое лицо по ID. Доступно только пользователям с ролью ADMIN."
     )
     @ApiResponses({
             @ApiResponse(
@@ -168,8 +168,8 @@ public class LegalEntityController {
     }
 
     @Operation(
-            summary = "Delete a legal entity",
-            description = "Deletes a legal entity by ID, if it has no associated employees. Accessible only to users with ADMIN role."
+            summary = "Удалить юридическое лицо",
+            description = "Удаляет юридическое лицо по ID, если с ним не связаны сотрудники. Доступно только пользователям с ролью ADMIN."
     )
     @ApiResponses({
             @ApiResponse(

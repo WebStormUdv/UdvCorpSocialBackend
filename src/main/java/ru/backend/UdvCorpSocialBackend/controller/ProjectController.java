@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/projects")
-@Tag(name = "Projects", description = "API for managing projects and their associated employees")
+@Tag(name = "Projects", description = "API для управления проектами и связанными с ними сотрудниками")
 @SecurityRequirement(name = "bearerAuth")
 public class ProjectController {
 
@@ -27,8 +27,8 @@ public class ProjectController {
     private ProjectService projectService;
 
     @Operation(
-            summary = "Get all projects",
-            description = "Retrieves a list of all projects, optionally filtered by employee ID. Accessible to all authenticated users."
+            summary = "Получить все проекты",
+            description = "Возвращает список всех проектов, с возможностью фильтрации по ID сотрудника. Доступно для всех аутентифицированных пользователей."
     )
     @ApiResponses({
             @ApiResponse(
@@ -51,8 +51,8 @@ public class ProjectController {
     }
 
     @Operation(
-            summary = "Get project by ID",
-            description = "Retrieves details of a specific project, including associated employees. Accessible to all authenticated users."
+            summary = "Получить проект по ID",
+            description = "Возвращает подробную информацию о конкретном проекте, включая связанных сотрудников. Доступно для всех аутентифицированных пользователей."
     )
     @ApiResponses({
             @ApiResponse(
@@ -80,8 +80,8 @@ public class ProjectController {
     }
 
     @Operation(
-            summary = "Create a new project",
-            description = "Creates a new project. Accessible only to users with ADMIN role."
+            summary = "Создать новый проект",
+            description = "Создает новый проект. Доступно только пользователям с ролью ADMIN."
     )
     @ApiResponses({
             @ApiResponse(
@@ -115,8 +115,8 @@ public class ProjectController {
     }
 
     @Operation(
-            summary = "Update a project",
-            description = "Updates an existing project by ID. Accessible only to users with ADMIN role."
+            summary = "Обновить проект",
+            description = "Обновляет существующий проект по ID. Доступно только пользователям с ролью ADMIN."
     )
     @ApiResponses({
             @ApiResponse(
@@ -155,8 +155,8 @@ public class ProjectController {
     }
 
     @Operation(
-            summary = "Delete a project",
-            description = "Deletes a project by ID, if it has no associated employees. Accessible only to users with ADMIN role."
+            summary = "Удалить проект",
+            description = "Удаляет проект по ID, если в нем нет связанных сотрудников. Доступно только пользователям с ролью ADMIN."
     )
     @ApiResponses({
             @ApiResponse(
@@ -193,8 +193,8 @@ public class ProjectController {
     }
 
     @Operation(
-            summary = "Add employees to a project",
-            description = "Adds one or more employees to a project by their IDs. Accessible only to users with ADMIN role."
+            summary = "Добавить сотрудников в проект",
+            description = "Добавляет одного или нескольких сотрудников в проект по их ID. Доступно только пользователям с ролью ADMIN."
     )
     @ApiResponses({
             @ApiResponse(
@@ -233,8 +233,8 @@ public class ProjectController {
     }
 
     @Operation(
-            summary = "Remove an employee from a project",
-            description = "Removes an employee from a project by their ID. Accessible only to users with ADMIN role."
+            summary = "Удалить сотрудника из проекта",
+            description = "Удаляет сотрудника из проекта по его ID. Доступно только пользователям с ролью ADMIN."
     )
     @ApiResponses({
             @ApiResponse(

@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +19,7 @@ import ru.backend.UdvCorpSocialBackend.service.EmployeeService;
 
 @RestController
 @RequestMapping("/api/employees")
+@Tag(name = "Register new employee", description = "API для управления сотрудниками")
 public class EmployeeController {
 
     @Autowired
@@ -26,8 +28,8 @@ public class EmployeeController {
     @PostMapping
     @PreAuthorize("hasRole('admin')")
     @Operation(
-            summary = "Create a new employee",
-            description = "Creates a new employee with the provided details. Only accessible to users with ADMIN role."
+            summary = "Создать нового сотрудника",
+            description = "Создает нового сотрудника с указанными данными. Доступно только пользователям с ролью ADMIN."
     )
     @ApiResponses(value = {
             @ApiResponse(
