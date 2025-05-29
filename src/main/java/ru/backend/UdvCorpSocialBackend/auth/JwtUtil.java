@@ -1,5 +1,8 @@
 package ru.backend.UdvCorpSocialBackend.auth;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
@@ -47,14 +50,21 @@ public class JwtUtil {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         try {
-            Jwts.parser()
+            Jws<Claims> claims = Jwts.parser()
                     .verifyWith((SecretKey) key)
                     .build()
                     .parseSignedClaims(token);
-            logger.debug("Token is valid for user: {}", userDetails.getUsername());
-            return true;
-        } catch (Exception e) {
-            logger.error("Token failed validation: {}", e.getMessage());
+            String username = claims.getPayload().getSubject();
+            boolean isValid = username.equals(userDetails.getUsername()) &&
+                    !claims.getPayload().getExpiration().before(new Date());
+            if (isValid) {
+                logger.debug("Token is valid for user: {}", userDetails.getUsername());
+            } else {
+                logger.error("Token validation failed for user: {}. Username mismatch or expired.", userDetails.getUsername());
+            }
+            return isValid;
+        } catch (JwtException | IllegalArgumentException e) {
+            logger.error("Token validation failed: {}", e.getMessage());
             return false;
         }
     }
