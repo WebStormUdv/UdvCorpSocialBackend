@@ -21,8 +21,11 @@ public class FileStorageService {
     @Value("${minio.bucket.icons}")
     private String iconsBucketName;
 
-    @Value("${minio.url}")
-    private String minioUrl;
+    @Value("${minio.internal.url}")
+    private String minioInternalUrl;
+
+    @Value("${minio.external.url}")
+    private String minioExternalUrl;
 
     @Value("${minio.bucket.skill-docs}")
     private String skillDocsBucketName;
@@ -63,7 +66,7 @@ public class FileStorageService {
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
         // Формирование публичного URL
-        return String.format("%s/%s/%s", minioUrl, postsBucketName, fileName);
+        return String.format("%s/%s/%s", minioExternalUrl, postsBucketName, fileName);
     }
 
     public void deleteFile(String fileUrl) {
@@ -103,7 +106,7 @@ public class FileStorageService {
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
         // Формирование публичного URL
-        return String.format("%s/%s/%s", minioUrl, iconsBucketName, fileName);
+        return String.format("%s/%s/%s", minioExternalUrl, iconsBucketName, fileName);
     }
 
     public void deleteIconFile(String fileUrl) {
@@ -143,7 +146,7 @@ public class FileStorageService {
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
         // Формирование публичного URL
-        return String.format("%s/%s/%s", minioUrl, skillDocsBucketName, fileName);
+        return String.format("%s/%s/%s", minioExternalUrl, skillDocsBucketName, fileName);
     }
 
     public void deleteSkillDocFile(String fileUrl) {
@@ -183,7 +186,7 @@ public class FileStorageService {
         s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
 
         // Формирование публичного URL
-        return String.format("%s/%s/%s", minioUrl, gratAchievsBucketName, fileName);
+        return String.format("%s/%s/%s", minioExternalUrl, gratAchievsBucketName, fileName);
     }
 
     public void deleteGratAchieveFile(String fileUrl) {
