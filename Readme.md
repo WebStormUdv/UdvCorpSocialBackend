@@ -62,6 +62,17 @@ cp .env.example .env
 docker-compose up -d
 ```
 
+После запуска система будет автоматически наполнена **примерными тестовыми данными**.
+В базу добавлены **3 пользователя** с разными ролями:
+
+| Email                                                         | Пароль         | Роль     |
+| ------------------------------------------------------------- | -------------- | -------- |
+| [ivanaa.ivanov@company.com](mailto:ivanaa.ivanov@company.com) | SecurePass123! | работник |
+| [user@mail.ru](mailto:user@mail.ru)                           | SecurePass123! | работник |
+| [admin@mail.ru](mailto:admin@mail.ru)                         | SecurePass123! | админ    |
+
+Вы можете использовать эти учётные данные для входа и тестирования API (например, через Swagger UI).
+
 Чтобы остановить:
 
 ```bash
