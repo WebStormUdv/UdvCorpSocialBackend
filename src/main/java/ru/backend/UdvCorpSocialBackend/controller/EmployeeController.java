@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.backend.UdvCorpSocialBackend.dto.CreateEmployeeRequest;
-import ru.backend.UdvCorpSocialBackend.dto.EmployeeResponseDto;
+import ru.backend.UdvCorpSocialBackend.dto.employee.CreateEmployeeRequest;
+import ru.backend.UdvCorpSocialBackend.dto.employee.EmployeeResponseDto;
 import ru.backend.UdvCorpSocialBackend.service.EmployeeService;
 
 @RestController

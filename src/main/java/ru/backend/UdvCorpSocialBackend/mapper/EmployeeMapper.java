@@ -1,9 +1,9 @@
 package ru.backend.UdvCorpSocialBackend.mapper;
 
 import org.springframework.stereotype.Component;
-import ru.backend.UdvCorpSocialBackend.dto.EmployeeProfileDto;
-import ru.backend.UdvCorpSocialBackend.dto.EmployeeProfileResponseDto;
-import ru.backend.UdvCorpSocialBackend.dto.EmployeeResponseDto;
+import ru.backend.UdvCorpSocialBackend.dto.employee.EmployeeProfileDto;
+import ru.backend.UdvCorpSocialBackend.dto.employee.EmployeeProfileResponseDto;
+import ru.backend.UdvCorpSocialBackend.dto.employee.EmployeeResponseDto;
 import ru.backend.UdvCorpSocialBackend.model.Employee;
 import ru.backend.UdvCorpSocialBackend.model.EmployeeProfile;
 

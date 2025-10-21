@@ -1,7 +1,7 @@
 package ru.backend.UdvCorpSocialBackend.mapper;
 
-import ru.backend.UdvCorpSocialBackend.dto.CommentResponseDTO;
-import ru.backend.UdvCorpSocialBackend.dto.EmployeeDTO;
+import ru.backend.UdvCorpSocialBackend.dto.comment.CommentResponseDTO;
+import ru.backend.UdvCorpSocialBackend.dto.employee.EmployeeDTO;
 import ru.backend.UdvCorpSocialBackend.model.Comment;
 import ru.backend.UdvCorpSocialBackend.model.Employee;
 

@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.backend.UdvCorpSocialBackend.dto.GratitudeAchievementCreateDTO;
-import ru.backend.UdvCorpSocialBackend.dto.GratitudeAchievementDTO;
-import ru.backend.UdvCorpSocialBackend.dto.GratitudeAchievementUpdateDTO;
+import ru.backend.UdvCorpSocialBackend.dto.gratachiev.*;
 import ru.backend.UdvCorpSocialBackend.model.enums.GaType;
 import ru.backend.UdvCorpSocialBackend.service.GratitudeAchievementService;
 

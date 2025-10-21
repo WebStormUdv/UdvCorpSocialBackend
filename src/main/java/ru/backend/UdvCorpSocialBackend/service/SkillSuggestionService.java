@@ -1,13 +1,12 @@
 package ru.backend.UdvCorpSocialBackend.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.backend.UdvCorpSocialBackend.dto.SkillSuggestionCreateDTO;
-import ru.backend.UdvCorpSocialBackend.dto.SkillSuggestionDTO;
-import ru.backend.UdvCorpSocialBackend.dto.SkillSuggestionUpdateDTO;
+import ru.backend.UdvCorpSocialBackend.dto.skill.SkillSuggestionCreateDTO;
+import ru.backend.UdvCorpSocialBackend.dto.skill.SkillSuggestionDTO;
+import ru.backend.UdvCorpSocialBackend.dto.skill.SkillSuggestionUpdateDTO;
 import ru.backend.UdvCorpSocialBackend.model.Employee;
 import ru.backend.UdvCorpSocialBackend.model.Skill;
 import ru.backend.UdvCorpSocialBackend.model.SkillSuggestion;

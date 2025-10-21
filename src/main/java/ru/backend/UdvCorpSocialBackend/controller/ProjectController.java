@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.backend.UdvCorpSocialBackend.dto.ProjectCreateDTO;
-import ru.backend.UdvCorpSocialBackend.dto.ProjectResponseDTO;
+import ru.backend.UdvCorpSocialBackend.dto.project.ProjectCreateDTO;
+import ru.backend.UdvCorpSocialBackend.dto.project.ProjectResponseDTO;
 import ru.backend.UdvCorpSocialBackend.service.ProjectService;
 
 import java.util.List;

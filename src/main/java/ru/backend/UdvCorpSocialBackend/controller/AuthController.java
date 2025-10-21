@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.backend.UdvCorpSocialBackend.auth.JwtUtil;
-import ru.backend.UdvCorpSocialBackend.dto.JwtResponse;
-import ru.backend.UdvCorpSocialBackend.dto.LoginRequest;
+import ru.backend.UdvCorpSocialBackend.dto.auth.JwtResponse;
+import ru.backend.UdvCorpSocialBackend.dto.auth.LoginRequest;
 
 @RestController
 @RequestMapping("/api/auth")

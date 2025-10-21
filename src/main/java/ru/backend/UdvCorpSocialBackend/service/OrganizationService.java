@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.backend.UdvCorpSocialBackend.dto.OrganizationNodeDTO;
+import ru.backend.UdvCorpSocialBackend.dto.organization.OrganizationNodeDTO;
 import ru.backend.UdvCorpSocialBackend.model.Department;
 import ru.backend.UdvCorpSocialBackend.model.Employee;
 import ru.backend.UdvCorpSocialBackend.model.Subdivision;

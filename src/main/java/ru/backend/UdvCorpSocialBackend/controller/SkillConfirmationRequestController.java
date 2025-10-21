@@ -2,19 +2,14 @@ package ru.backend.UdvCorpSocialBackend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import ru.backend.UdvCorpSocialBackend.dto.SkillConfirmationRequestCreateDTO;
-import ru.backend.UdvCorpSocialBackend.dto.SkillConfirmationRequestDTO;
-import ru.backend.UdvCorpSocialBackend.dto.SkillConfirmationRequestUpdateDTO;
-import ru.backend.UdvCorpSocialBackend.model.enums.ConfirmationMethod;
+import ru.backend.UdvCorpSocialBackend.dto.skill.SkillConfirmationRequestCreateDTO;
+import ru.backend.UdvCorpSocialBackend.dto.skill.SkillConfirmationRequestDTO;
+import ru.backend.UdvCorpSocialBackend.dto.skill.SkillConfirmationRequestUpdateDTO;
 import ru.backend.UdvCorpSocialBackend.service.SkillConfirmationRequestService;
 
 import jakarta.validation.Valid;

@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ru.backend.UdvCorpSocialBackend.dto.EducationRequestDto;
-import ru.backend.UdvCorpSocialBackend.dto.EducationResponseDto;
+import ru.backend.UdvCorpSocialBackend.dto.education.EducationRequestDto;
+import ru.backend.UdvCorpSocialBackend.dto.education.EducationResponseDto;
 import ru.backend.UdvCorpSocialBackend.service.EducationService;
 
 import java.util.List;

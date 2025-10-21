@@ -5,7 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.backend.UdvCorpSocialBackend.dto.EmployeeSkillDTO;
+import ru.backend.UdvCorpSocialBackend.dto.employee.EmployeeSkillDTO;
 import ru.backend.UdvCorpSocialBackend.model.Employee;
 import ru.backend.UdvCorpSocialBackend.model.EmployeeSkill;
 import ru.backend.UdvCorpSocialBackend.repository.EmployeeRepository;

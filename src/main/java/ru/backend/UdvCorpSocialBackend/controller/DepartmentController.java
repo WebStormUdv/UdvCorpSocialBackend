@@ -6,8 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.backend.UdvCorpSocialBackend.dto.DepartmentCreateDTO;
-import ru.backend.UdvCorpSocialBackend.dto.DepartmentResponseDTO;
+import ru.backend.UdvCorpSocialBackend.dto.department.*;
 import ru.backend.UdvCorpSocialBackend.service.DepartmentService;
 
 import java.util.List;
