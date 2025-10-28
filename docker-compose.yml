@@ -12,7 +12,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/udv_corp_social
       - SPRING_DATASOURCE_USERNAME=${UDV_DB_USER}
       - SPRING_DATASOURCE_PASSWORD=${UDV_DB_PASSWORD}
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
       - SPRING_JPA_SHOW_SQL=true
       - JWT_SECRET=${JWT_SECRET}
       - JWT_EXPIRATION=${JWT_EXPIRATION}
@@ -49,14 +49,13 @@ services:
     image: postgres:17
     container_name: udv-postgres
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       - POSTGRES_DB=udv_corp_social
       - POSTGRES_USER=${UDV_DB_USER}
       - POSTGRES_PASSWORD=${UDV_DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${UDV_DB_USER} -d udv_corp_social"]
       interval: 10s
