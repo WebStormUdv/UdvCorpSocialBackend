@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import ru.backend.UdvCorpSocialBackend.model.enums.CommunityType;
+import ru.backend.UdvCorpSocialBackend.model.CommunityType;
 
 @Data
 public class CommunityCreateDto {

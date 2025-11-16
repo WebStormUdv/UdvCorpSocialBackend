@@ -17,7 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.backend.UdvCorpSocialBackend.dto.post.*;
-import ru.backend.UdvCorpSocialBackend.model.enums.PostType;
+import ru.backend.UdvCorpSocialBackend.model.PostType;
 import ru.backend.UdvCorpSocialBackend.service.PostService;
 
 @RestController

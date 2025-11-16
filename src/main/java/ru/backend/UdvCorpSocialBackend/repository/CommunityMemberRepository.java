@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.backend.UdvCorpSocialBackend.model.CommunityMember;
 import ru.backend.UdvCorpSocialBackend.model.CommunityMemberId;
-import ru.backend.UdvCorpSocialBackend.model.enums.CommunityRole;
+import ru.backend.UdvCorpSocialBackend.model.CommunityRole;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

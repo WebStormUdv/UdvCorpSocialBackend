@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.backend.UdvCorpSocialBackend.dto.gratachiev.GratitudeAchievementCreateDTO;
-import ru.backend.UdvCorpSocialBackend.dto.gratachiev.GratitudeAchievementDTO;
-import ru.backend.UdvCorpSocialBackend.dto.gratachiev.GratitudeAchievementUpdateDTO;
+import ru.backend.UdvCorpSocialBackend.dto.gratitude.GratitudeAchievementCreateDTO;
+import ru.backend.UdvCorpSocialBackend.dto.gratitude.GratitudeAchievementDTO;
+import ru.backend.UdvCorpSocialBackend.dto.gratitude.GratitudeAchievementUpdateDTO;
 import ru.backend.UdvCorpSocialBackend.model.Employee;
 import ru.backend.UdvCorpSocialBackend.model.GratitudeAchievement;
-import ru.backend.UdvCorpSocialBackend.model.enums.GaType;
+import ru.backend.UdvCorpSocialBackend.model.GaType;
 import ru.backend.UdvCorpSocialBackend.repository.EmployeeRepository;
 import ru.backend.UdvCorpSocialBackend.repository.GratitudeAchievementRepository;
 

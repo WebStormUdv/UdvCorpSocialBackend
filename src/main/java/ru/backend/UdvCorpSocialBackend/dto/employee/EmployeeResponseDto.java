@@ -2,8 +2,8 @@ package ru.backend.UdvCorpSocialBackend.dto.employee;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.backend.UdvCorpSocialBackend.model.enums.RoleType;
-import ru.backend.UdvCorpSocialBackend.model.enums.WorkStatus;
+import ru.backend.UdvCorpSocialBackend.model.RoleType;
+import ru.backend.UdvCorpSocialBackend.model.WorkStatus;
 
 @Getter
 @Setter

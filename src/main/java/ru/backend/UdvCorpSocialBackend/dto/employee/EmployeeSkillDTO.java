@@ -2,7 +2,7 @@ package ru.backend.UdvCorpSocialBackend.dto.employee;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.backend.UdvCorpSocialBackend.model.enums.ConfirmationStatus;
+import ru.backend.UdvCorpSocialBackend.model.ConfirmationStatus;
 
 @Getter
 @Setter

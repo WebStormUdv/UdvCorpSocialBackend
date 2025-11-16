@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
-import ru.backend.UdvCorpSocialBackend.model.enums.PostType;
+import ru.backend.UdvCorpSocialBackend.model.PostType;
 
 @Getter
 @Setter

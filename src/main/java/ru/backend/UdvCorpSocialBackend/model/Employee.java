@@ -3,8 +3,6 @@ package ru.backend.UdvCorpSocialBackend.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import ru.backend.UdvCorpSocialBackend.model.enums.RoleType;
-import ru.backend.UdvCorpSocialBackend.model.enums.WorkStatus;
 
 import java.util.HashSet;
 import java.util.Set;

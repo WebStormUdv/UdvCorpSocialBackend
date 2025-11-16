@@ -8,8 +8,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.backend.UdvCorpSocialBackend.model.*;
-import ru.backend.UdvCorpSocialBackend.model.enums.CommunityRole;
-import ru.backend.UdvCorpSocialBackend.model.enums.RoleType;
+import ru.backend.UdvCorpSocialBackend.model.CommunityRole;
+import ru.backend.UdvCorpSocialBackend.model.RoleType;
 import ru.backend.UdvCorpSocialBackend.repository.*;
 
 import java.time.LocalDate;

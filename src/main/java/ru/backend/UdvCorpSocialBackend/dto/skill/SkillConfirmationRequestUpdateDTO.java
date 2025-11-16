@@ -2,7 +2,7 @@ package ru.backend.UdvCorpSocialBackend.dto.skill;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.backend.UdvCorpSocialBackend.model.enums.RequestStatus;
+import ru.backend.UdvCorpSocialBackend.model.RequestStatus;
 
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;

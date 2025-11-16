@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,20 +23,40 @@ import ru.backend.UdvCorpSocialBackend.dto.auth.LoginRequest;
 @RequestMapping("/api/auth")
 @Tag(name = "Authentication", description = "API для аутентификации пользователей")
 public class AuthController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    public AuthController(
+            AuthenticationManager authenticationManager,
+            JwtUtil jwtUtil
+    ) {
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
+    }
 
     @PostMapping("/login")
     @Operation(
             summary = "Вход пользователя",
-            description = "Аутентифицирует пользователя и возвращает JWT-токен для последующих запросов."
-    )    @ApiResponses(value = {
+            description = """
+                        Аутентифицирует пользователя и возвращает JWT-токен для последующих запросов.
+                    
+                        **Тестовые учетные данные:**
+                    
+                        1. **Администратор:**
+                           - Email: admin@mail.ru
+                           - Пароль: SecurePass123!
+                    
+                        2. **Работник 1:**
+                           - Email: user@mail.ru
+                           - Пароль: SecurePass123!
+                    
+                        3. **Работник 2:**
+                           - Email: ivanaa.ivanov@company.com
+                           - Пароль: SecurePass123!
+                    """
+    )
+    @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully authenticated"),
             @ApiResponse(responseCode = "401", description = "Unauthorized - invalid credentials")
     })

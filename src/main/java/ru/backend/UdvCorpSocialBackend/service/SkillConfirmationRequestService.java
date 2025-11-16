@@ -8,8 +8,8 @@ import ru.backend.UdvCorpSocialBackend.dto.skill.SkillConfirmationRequestCreateD
 import ru.backend.UdvCorpSocialBackend.dto.skill.SkillConfirmationRequestDTO;
 import ru.backend.UdvCorpSocialBackend.dto.skill.SkillConfirmationRequestUpdateDTO;
 import ru.backend.UdvCorpSocialBackend.model.*;
-import ru.backend.UdvCorpSocialBackend.model.enums.ConfirmationStatus;
-import ru.backend.UdvCorpSocialBackend.model.enums.RequestStatus;
+import ru.backend.UdvCorpSocialBackend.model.ConfirmationStatus;
+import ru.backend.UdvCorpSocialBackend.model.RequestStatus;
 import ru.backend.UdvCorpSocialBackend.repository.*;
 
 import java.io.IOException;

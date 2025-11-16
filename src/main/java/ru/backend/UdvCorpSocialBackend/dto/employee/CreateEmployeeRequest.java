@@ -9,8 +9,8 @@ import ru.backend.UdvCorpSocialBackend.model.Department;
 import ru.backend.UdvCorpSocialBackend.model.Employee;
 import ru.backend.UdvCorpSocialBackend.model.LegalEntity;
 import ru.backend.UdvCorpSocialBackend.model.Subdivision;
-import ru.backend.UdvCorpSocialBackend.model.enums.RoleType;
-import ru.backend.UdvCorpSocialBackend.model.enums.WorkStatus;
+import ru.backend.UdvCorpSocialBackend.model.RoleType;
+import ru.backend.UdvCorpSocialBackend.model.WorkStatus;
 
 @Getter
 @Setter

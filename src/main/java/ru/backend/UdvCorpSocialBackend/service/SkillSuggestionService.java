@@ -10,7 +10,7 @@ import ru.backend.UdvCorpSocialBackend.dto.skill.SkillSuggestionUpdateDTO;
 import ru.backend.UdvCorpSocialBackend.model.Employee;
 import ru.backend.UdvCorpSocialBackend.model.Skill;
 import ru.backend.UdvCorpSocialBackend.model.SkillSuggestion;
-import ru.backend.UdvCorpSocialBackend.model.enums.SuggestionStatus;
+import ru.backend.UdvCorpSocialBackend.model.SuggestionStatus;
 import ru.backend.UdvCorpSocialBackend.repository.EmployeeRepository;
 import ru.backend.UdvCorpSocialBackend.repository.SkillRepository;
 import ru.backend.UdvCorpSocialBackend.repository.SkillSuggestionRepository;

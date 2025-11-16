@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.backend.UdvCorpSocialBackend.model.EmployeeSkill;
 import ru.backend.UdvCorpSocialBackend.model.EmployeeSkillId;
-import ru.backend.UdvCorpSocialBackend.model.enums.ConfirmationStatus;
+import ru.backend.UdvCorpSocialBackend.model.ConfirmationStatus;
 
 import java.util.List;
 import java.util.Optional;

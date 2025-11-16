@@ -3,8 +3,8 @@ package ru.backend.UdvCorpSocialBackend.dto.employee;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import ru.backend.UdvCorpSocialBackend.model.enums.EmploymentStatus;
-import ru.backend.UdvCorpSocialBackend.model.enums.WorkStatus;
+import ru.backend.UdvCorpSocialBackend.model.EmploymentStatus;
+import ru.backend.UdvCorpSocialBackend.model.WorkStatus;
 
 import java.time.LocalDate;
 import java.util.Set;

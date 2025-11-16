@@ -1,7 +1,7 @@
 package ru.backend.UdvCorpSocialBackend.dto.community;
 
 import lombok.Data;
-import ru.backend.UdvCorpSocialBackend.model.enums.RequestStatus;
+import ru.backend.UdvCorpSocialBackend.model.RequestStatus;
 
 @Data
 public class MembershipRequestDto {

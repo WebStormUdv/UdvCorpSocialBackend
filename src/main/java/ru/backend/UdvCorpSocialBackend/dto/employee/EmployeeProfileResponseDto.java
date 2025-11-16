@@ -2,7 +2,7 @@ package ru.backend.UdvCorpSocialBackend.dto.employee;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.backend.UdvCorpSocialBackend.model.enums.EmploymentStatus;
+import ru.backend.UdvCorpSocialBackend.model.EmploymentStatus;
 
 import java.time.LocalDate;
 

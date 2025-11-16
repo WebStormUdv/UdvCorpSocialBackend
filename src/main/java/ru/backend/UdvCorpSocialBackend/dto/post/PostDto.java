@@ -2,7 +2,7 @@ package ru.backend.UdvCorpSocialBackend.dto.post;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.backend.UdvCorpSocialBackend.model.enums.PostType;
+import ru.backend.UdvCorpSocialBackend.model.PostType;
 
 import java.time.LocalDateTime;
 

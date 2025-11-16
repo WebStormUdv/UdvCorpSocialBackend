@@ -3,7 +3,7 @@ package ru.backend.UdvCorpSocialBackend.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.backend.UdvCorpSocialBackend.model.GratitudeAchievement;
-import ru.backend.UdvCorpSocialBackend.model.enums.GaType;
+import ru.backend.UdvCorpSocialBackend.model.GaType;
 
 import java.util.List;
 

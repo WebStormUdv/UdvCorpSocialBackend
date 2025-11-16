@@ -1,4 +1,4 @@
-package ru.backend.UdvCorpSocialBackend.dto.gratachiev;
+package ru.backend.UdvCorpSocialBackend.dto.gratitude;
 
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

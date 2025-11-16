@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import ru.backend.UdvCorpSocialBackend.model.enums.PostType;
 
 import java.time.LocalDateTime;
 

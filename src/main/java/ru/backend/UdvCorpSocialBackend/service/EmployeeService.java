@@ -14,8 +14,8 @@ import ru.backend.UdvCorpSocialBackend.dto.employee.EmployeeResponseDto;
 import ru.backend.UdvCorpSocialBackend.mapper.EmployeeMapper;
 import ru.backend.UdvCorpSocialBackend.model.Employee;
 import ru.backend.UdvCorpSocialBackend.model.EmployeeProfile;
-import ru.backend.UdvCorpSocialBackend.model.enums.RoleType;
-import ru.backend.UdvCorpSocialBackend.model.enums.WorkStatus;
+import ru.backend.UdvCorpSocialBackend.model.RoleType;
+import ru.backend.UdvCorpSocialBackend.model.WorkStatus;
 import ru.backend.UdvCorpSocialBackend.repository.EmployeeRepository;
 
 import jakarta.validation.ConstraintViolation;

@@ -1,7 +1,7 @@
 package ru.backend.UdvCorpSocialBackend.dto.community;
 
 import lombok.Data;
-import ru.backend.UdvCorpSocialBackend.model.enums.CommunityType;
+import ru.backend.UdvCorpSocialBackend.model.CommunityType;
 
 @Data
 public class CommunityDto {

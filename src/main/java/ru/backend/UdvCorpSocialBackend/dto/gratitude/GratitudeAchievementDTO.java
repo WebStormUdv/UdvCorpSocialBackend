@@ -1,8 +1,8 @@
-package ru.backend.UdvCorpSocialBackend.dto.gratachiev;
+package ru.backend.UdvCorpSocialBackend.dto.gratitude;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.backend.UdvCorpSocialBackend.model.enums.GaType;
+import ru.backend.UdvCorpSocialBackend.model.GaType;
 
 import java.time.LocalDateTime;
 

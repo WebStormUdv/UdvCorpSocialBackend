@@ -1,4 +1,4 @@
-package ru.backend.UdvCorpSocialBackend.dto.legalentity;
+package ru.backend.UdvCorpSocialBackend.dto.company;
 
 import lombok.Getter;
 import lombok.Setter;

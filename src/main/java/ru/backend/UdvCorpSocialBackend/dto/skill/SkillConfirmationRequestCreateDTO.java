@@ -3,7 +3,7 @@ package ru.backend.UdvCorpSocialBackend.dto.skill;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;
-import ru.backend.UdvCorpSocialBackend.model.enums.ConfirmationMethod;
+import ru.backend.UdvCorpSocialBackend.model.ConfirmationMethod;
 
 import jakarta.validation.constraints.*;
 

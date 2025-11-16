@@ -2,8 +2,8 @@ package ru.backend.UdvCorpSocialBackend.dto.skill;
 
 import lombok.Getter;
 import lombok.Setter;
-import ru.backend.UdvCorpSocialBackend.model.enums.ConfirmationMethod;
-import ru.backend.UdvCorpSocialBackend.model.enums.RequestStatus;
+import ru.backend.UdvCorpSocialBackend.model.ConfirmationMethod;
+import ru.backend.UdvCorpSocialBackend.model.RequestStatus;
 
 import java.time.LocalDate;
 

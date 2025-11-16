@@ -1,4 +1,4 @@
-package ru.backend.UdvCorpSocialBackend.model.enums;
+package ru.backend.UdvCorpSocialBackend.model;
 
 public enum WorkStatus {
     in_office,
