@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Import default Spring Boot logging configurations -->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <!-- Console Appender - outputs logs to the console (stdout) with colors -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${CONSOLE_LOG_PATTERN:-%clr(%d{${LOG_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}}){faint}
+                %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint}
+                %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}
+            </pattern>
+            <charset>${CONSOLE_LOG_CHARSET:-UTF-8}</charset>
+        </encoder>
+    </appender>
+
+    <!-- Root Logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+    <!-- Application-specific logger -->
+    <logger name="ru.backend.UdvCorpSocialBackend" level="DEBUG"/>
+
+    <!-- Spring Framework loggers -->
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework.web" level="DEBUG"/>
+    <logger name="org.springframework.security" level="DEBUG"/>
+
+    <!-- Hibernate loggers -->
+    <logger name="org.hibernate.SQL" level="DEBUG"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
+</configuration>
