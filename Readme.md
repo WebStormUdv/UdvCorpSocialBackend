@@ -1,4 +1,3 @@
-
 <h1 align="center">🏢 UdvCorpSocialBackend</h1>
 
 <p align="center">
@@ -66,7 +65,7 @@ docker-compose up -d
 В базу добавлены **3 пользователя** с разными ролями:
 
 | Email                                                         | Пароль         | Роль     |
-| ------------------------------------------------------------- | -------------- | -------- |
+|---------------------------------------------------------------|----------------|----------|
 | [ivanaa.ivanov@company.com](mailto:ivanaa.ivanov@company.com) | SecurePass123! | работник |
 | [user@mail.ru](mailto:user@mail.ru)                           | SecurePass123! | работник |
 | [admin@mail.ru](mailto:admin@mail.ru)                         | SecurePass123! | админ    |
@@ -147,6 +146,11 @@ JWT_EXPIRATION=86400000
       <td>MinIO Console</td>
       <td><a href="http://localhost:9001/">http://localhost:9001</a></td>
       <td>Для администрирования бакетов</td>
+    </tr>
+    <tr>
+      <td>Grafana</td>
+      <td><a href="http://localhost:3001/">http://localhost:3001</a></td>
+      <td><code>admin/admin123</code></td>
     </tr>
   </tbody>
 </table>
