@@ -33,6 +33,9 @@ public class FileStorageService {
     @Value("${minio.bucket.grat-achieves}")
     private String gratAchievsBucketName;
 
+    @Value("${minio.bucket.community-icons}")
+    private String communityIconsBucketName;
+
     public FileStorageService(S3Client s3Client) {
         this.s3Client = s3Client;
     }
@@ -195,6 +198,46 @@ public class FileStorageService {
         }
         String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
         s3Client.deleteObject(b -> b.bucket(gratAchievsBucketName).key(fileName));
+    }
+
+    public String storeCommunityIcon(MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("File cannot be empty");
+        }
+
+        // Проверка размера файла
+        if (file.getSize() > 10 * 1024 * 1024) { // 10 MB
+            throw new IllegalArgumentException("File size exceeds 10 MB");
+        }
+
+        // Проверка формата (разрешаем только изображения)
+        String contentType = file.getContentType();
+        if (!isImage(contentType)) {
+            throw new IllegalArgumentException("Only image files (JPEG, PNG) are allowed");
+        }
+
+        // Генерация уникального имени файла
+        String fileName = UUID.randomUUID() + "-" + file.getOriginalFilename();
+
+        // Загрузка в MinIO
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(communityIconsBucketName)
+                .key(fileName)
+                .contentType(contentType)
+                .build();
+
+        s3Client.putObject(putObjectRequest, RequestBody.fromBytes(file.getBytes()));
+
+        // Формирование публичного URL
+        return String.format("%s/%s/%s", minioExternalUrl, communityIconsBucketName, fileName);
+    }
+
+    public void deleteCommunityIcon(String fileUrl) {
+        if (fileUrl == null || fileUrl.isEmpty()) {
+            return;
+        }
+        String fileName = fileUrl.substring(fileUrl.lastIndexOf("/") + 1);
+        s3Client.deleteObject(b -> b.bucket(communityIconsBucketName).key(fileName));
     }
 
     private boolean isImage(String contentType) {

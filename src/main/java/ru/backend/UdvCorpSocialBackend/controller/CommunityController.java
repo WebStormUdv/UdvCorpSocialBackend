@@ -8,9 +8,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.backend.UdvCorpSocialBackend.dto.community.*;
 import ru.backend.UdvCorpSocialBackend.service.CommunityService;
 
@@ -131,5 +133,18 @@ public class CommunityController {
     public ResponseEntity<Void> removeMember(@PathVariable Integer communityId, @PathVariable Integer employeeId) {
         communityService.removeMember(communityId, employeeId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping(value = "/{communityId}/icon", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("isAuthenticated()")
+    @Operation(
+            summary = "Загрузить/изменить иконку сообщества",
+            description = "Позволяет администратору сообщества загрузить/обновить иконку (файл изображение)"
+    )
+    public ResponseEntity<CommunityDto> updateCommunityIcon(
+            @PathVariable Integer communityId,
+            @RequestParam("icon") MultipartFile iconFile) {
+        CommunityDto communityDto = communityService.updateCommunityIcon(communityId, iconFile);
+        return ResponseEntity.ok(communityDto);
     }
 }

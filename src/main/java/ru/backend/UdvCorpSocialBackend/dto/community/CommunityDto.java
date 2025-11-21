@@ -8,6 +8,7 @@ public class CommunityDto {
     private Integer id;
     private String name;
     private String description;
+    private String photoUrl;
     private Integer creatorId;
     private CommunityType type;
 }

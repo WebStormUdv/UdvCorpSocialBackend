@@ -70,6 +70,8 @@ services:
       /usr/bin/mc anonymous set download local/skill-docs;
       /usr/bin/mc mb local/grat-achieves --ignore-existing;
       /usr/bin/mc anonymous set download local/grat-achieves;
+      /usr/bin/mc mb local/community-icons --ignore-existing;
+      /usr/bin/mc anonymous set download local/community-icons;
       echo 'Корзины созданы и настроены на публичный доступ';
       exit 0;
       "

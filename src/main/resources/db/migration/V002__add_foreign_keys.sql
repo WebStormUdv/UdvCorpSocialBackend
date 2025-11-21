@@ -1,4 +1,4 @@
--- Flyway Migration V2: Add foreign key constraints
+-- Flyway Migration V002: Add foreign key constraints
 -- Description: Create relationships between tables
 
 -- Comments foreign keys

@@ -20,6 +20,9 @@ public class Community {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "photo_url")
+    private String photoUrl;
+
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private Employee creator;

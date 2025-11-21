@@ -1,4 +1,4 @@
--- Flyway Migration V1: Create all database tables
+-- Flyway Migration V001: Create all database tables
 -- Description: Initial schema creation for UDV Corporate Social Network
 
 -- Legal entities table

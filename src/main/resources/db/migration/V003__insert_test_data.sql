@@ -1,4 +1,4 @@
--- Flyway Migration V3: Insert test data
+-- Flyway Migration V003: Insert test data
 -- Description: Add initial test data for development and testing
 
 -- Step 1: Insert legal entities
