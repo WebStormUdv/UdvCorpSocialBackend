@@ -12,4 +12,5 @@ import java.time.LocalDateTime;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     long countByEmployeeIdAndTimestampAfter(Integer employeeId, LocalDateTime startOfDay);
     Page<Comment> findByPostId(Integer postId, Pageable pageable);
+    long countByPostId(Integer postId);
 }

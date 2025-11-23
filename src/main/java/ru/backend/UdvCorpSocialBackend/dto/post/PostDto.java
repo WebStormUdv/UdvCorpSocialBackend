@@ -12,6 +12,7 @@ public class PostDto {
     private Integer id;
     private Integer employeeId;
     private String employeeFullName;
+    private String employeePosition;
     private Integer communityId;
     private String content;
     private String mediaUrl;
@@ -20,6 +21,7 @@ public class PostDto {
     private LocalDateTime timestamp;
     private boolean isLiked;
     private long likesCount;
+    private long commentsCount;
 
     public void setIsLiked(boolean b) {
         this.isLiked = b;
