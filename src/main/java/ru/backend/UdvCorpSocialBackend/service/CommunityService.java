@@ -393,4 +393,28 @@ public class CommunityService {
         log.info("Community {} icon updated by admin {}", communityId, employeeId);
         return mapper.toCommunityDto(community);
     }
+
+    @Transactional(readOnly = true)
+    public CommunityDto getCommunityById(Integer id) {
+        var empId = getCurrentEmployeeId();
+        log.debug("Employee {} fetching community {}", empId, id);
+
+        var c = communityRepository.findById(id)
+                .orElseThrow(() -> {
+                    log.error("Community not found, id={}", id);
+                    return new EntityNotFoundException(
+                            "Сообщество с ID " + id + " не найдено"
+                    );
+                });
+
+        if (c.getType() == CommunityType.closed &&
+                !communityMemberRepository
+                        .existsByCommunityIdAndEmployeeId(id, empId)
+        ) {
+            log.warn("Employee {} tried to access closed community {} without membership", empId, id);
+            throw new SecurityException("Только участники могут просматривать закрытое сообщество");
+        }
+
+        return mapper.toCommunityDto(c);
+    }
 }

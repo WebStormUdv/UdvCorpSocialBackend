@@ -2,6 +2,7 @@ package ru.backend.UdvCorpSocialBackend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -146,5 +147,16 @@ public class CommunityController {
             @RequestParam("icon") MultipartFile iconFile) {
         CommunityDto communityDto = communityService.updateCommunityIcon(communityId, iconFile);
         return ResponseEntity.ok(communityDto);
+    }
+
+    @GetMapping("/{communityId}")
+    @PreAuthorize("isAuthenticated()")
+    @Operation(
+            summary = "Получить сообщество по ID",
+            description = "Возвращает информацию о сообществе по его идентификатору."
+    )
+    public ResponseEntity<CommunityDto> getCommunityById(@PathVariable Integer communityId) {
+        var c = communityService.getCommunityById(communityId);
+        return ResponseEntity.ok(c);
     }
 }
