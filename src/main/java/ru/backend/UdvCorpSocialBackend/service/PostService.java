@@ -260,22 +260,25 @@ public class PostService {
             PostType type, String sortBy, String sortDirection,
             int page, int size
     ) {
-        log.debug("Fetching posts: type={}, sortBy={}, sortDirection={}, page={}, size={}",
-                type, sortBy, sortDirection, page, size);
+        Integer employeeId = getCurrentEmployeeId();
+        log.debug("Fetching posts for employee {}: type={}, sortBy={}, sortDirection={}, page={}, size={}",
+                employeeId, type, sortBy, sortDirection, page, size);
 
         Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
         Pageable pageable = PageRequest.of(page, size, sort);
 
         Page<Post> posts;
         if (type != null) {
-            posts = postRepository.findByTypeAndCommunityIsNull(type, pageable);
+            posts = postRepository.findGlobalAndMemberCommunityPostsByType(employeeId, type, pageable);
         } else {
-            posts = postRepository.findByCommunityIsNull(pageable);
+            posts = postRepository.findGlobalAndMemberCommunityPosts(employeeId, pageable);
         }
 
-        log.info("Retrieved {} posts (page {}/{})", posts.getNumberOfElements(), page + 1, posts.getTotalPages());
+        log.info("Retrieved {} posts (global + communities) for employee {} (page {}/{})",
+                posts.getNumberOfElements(), employeeId, page + 1, posts.getTotalPages());
         return posts.map(this::mapToDto);
     }
+
 
     @Transactional(readOnly = true)
     public PostDto getPostById(Integer id) {
