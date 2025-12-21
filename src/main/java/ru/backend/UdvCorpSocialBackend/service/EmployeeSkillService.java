@@ -1,52 +1,94 @@
 package ru.backend.UdvCorpSocialBackend.service;
 
-import jakarta.persistence.EntityNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.backend.UdvCorpSocialBackend.dto.employee.EmployeeSkillDTO;
-import ru.backend.UdvCorpSocialBackend.model.Employee;
+import ru.backend.UdvCorpSocialBackend.dto.employee.ExtendedEmployeeSkillDTO;
+import ru.backend.UdvCorpSocialBackend.mapper.EmployeeSkillMapper;
+import ru.backend.UdvCorpSocialBackend.model.ConfirmationMethod;
+import ru.backend.UdvCorpSocialBackend.model.ConfirmationStatus;
 import ru.backend.UdvCorpSocialBackend.model.EmployeeSkill;
-import ru.backend.UdvCorpSocialBackend.repository.EmployeeRepository;
 import ru.backend.UdvCorpSocialBackend.repository.EmployeeSkillRepository;
 
-
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@Slf4j
+@RequiredArgsConstructor
 @Service
 public class EmployeeSkillService {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmployeeSkillService.class);
-
-    @Autowired
-    private EmployeeSkillRepository employeeSkillRepository;
-
-    @Autowired
-    private EmployeeRepository employeeRepository;
+    private final EmployeeSkillRepository employeeSkillRepository;
+    private final EmployeeSkillMapper mapper;
 
     public List<EmployeeSkillDTO> getEmployeeSkills(Integer employeeId) {
-        // Проверка существования сотрудника
-        Employee employee = employeeRepository.findById(employeeId)
-                .orElseThrow(() -> new EntityNotFoundException("Employee not found with ID: " + employeeId));
+        log.debug("Fetching skills for employeeId={}", employeeId);
 
-        // Получение навыков сотрудника
-        List<EmployeeSkill> employeeSkills = employeeSkillRepository.findByEmployeeId(employeeId);
-        logger.info("Retrieved {} skills for employee ID: {}", employeeSkills.size(), employeeId);
+        List<EmployeeSkill> es = employeeSkillRepository
+                .findByEmployeeId(employeeId);
 
-        // Маппинг в DTO
-        return employeeSkills.stream()
-                .map(this::convertToDTO)
+        if (es.isEmpty()) {
+            log.info("No skills found for employeeId={}", employeeId);
+        } else {
+            log.info("Retrieved {} skills for employeeId={}", es.size(), employeeId);
+        }
+
+        return es.stream()
+                .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    private EmployeeSkillDTO convertToDTO(EmployeeSkill employeeSkill) {
-        EmployeeSkillDTO dto = new EmployeeSkillDTO();
-        dto.setSkillId(employeeSkill.getSkill().getId());
-        dto.setName(employeeSkill.getSkill().getName());
-        dto.setProficiencyLevel(employeeSkill.getProficiencyLevel());
-        dto.setConfirmationStatus(employeeSkill.getConfirmationStatus());
-        return dto;
+    public List<ExtendedEmployeeSkillDTO> getEmployeeSkillsFiltered(
+            Integer employeeId,
+            String type,
+            Integer proficiencyLevel,
+            ConfirmationMethod method,
+            ConfirmationStatus status
+    ) {
+        log.debug(
+                "Fetching extended skills for employeeId={} with filters: type={}, proficiencyLevel={}, method={}, status={}",
+                employeeId, type, proficiencyLevel, method, status
+        );
+
+        List<EmployeeSkill> eSkills = employeeSkillRepository.findByEmployeeId(employeeId);
+
+        Predicate<EmployeeSkill> predicate = byType(type)
+                .and(byProficiency(proficiencyLevel))
+                .and(byMethod(method))
+                .and(byStatus(status));
+
+        List<EmployeeSkill> filtered = eSkills.stream()
+                .filter(predicate)
+                .toList();
+
+        log.info(
+                "Retrieved {} extended skills for employeeId={} after filtering",
+                filtered.size(), employeeId
+        );
+
+        return filtered.stream()
+                .map(mapper::toExtendedDTO)
+                .collect(Collectors.toList());
     }
+
+    private Predicate<EmployeeSkill> byType(String type) {
+        return es -> type == null
+                || (es.getSkill().getType() != null
+                && es.getSkill().getType().equalsIgnoreCase(type));
+    }
+
+    private Predicate<EmployeeSkill> byProficiency(Integer level) {
+        return es -> level == null || level.equals(es.getProficiencyLevel());
+    }
+
+    private Predicate<EmployeeSkill> byMethod(ConfirmationMethod method) {
+        return es -> method == null || method.equals(es.getConfirmationMethod());
+    }
+
+    private Predicate<EmployeeSkill> byStatus(ConfirmationStatus status) {
+        return es -> status == null || status.equals(es.getConfirmationStatus());
+    }
+
 }
